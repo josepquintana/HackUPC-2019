@@ -54,7 +54,7 @@ class AccidentsData:
                     '1st_road_number',
                     'road_type', 'speed_limit', '2nd_road_number', 'weather_conditions']
         norm = MinMaxScaler()
-        accidents[tobenorm] = pd.DataFrame(norm.fit_transform(accidents[tobenorm]))
+        accidents[tobenorm] = norm.fit_transform(accidents[tobenorm])
 
         #self.features = accidents.drop('target', axis=1)
         self.features = accidents
@@ -87,10 +87,13 @@ class VehiclesData:
         vehicles = vehicles.drop(vehicles[vehicles.Age_of_Driver < 15].index)
 
         vehicles['Engine_Capacity_(CC)'].replace(-1, np.nan, inplace=True)
+        vehicles['Engine_Capacity_(CC)'].replace('-1', np.nan, inplace=True)
         vehicles['Engine_Capacity_(CC)'].fillna(vehicles['Engine_Capacity_(CC)'].mean(), inplace=True)
 
         vehicles['Age_of_Driver'].replace(-1, np.nan, inplace=True)
+        vehicles['Age_of_Driver'].replace('-1', np.nan, inplace=True)
         vehicles['Age_of_Driver'].fillna(vehicles['Age_of_Driver'].mean(), inplace=True)
+
 
         vehicles['Age_of_Vehicle'].replace(-1, np.nan, inplace=True)
         vehicles['Age_of_Vehicle'].fillna(vehicles['Age_of_Vehicle'].mean(), inplace=True)
@@ -110,10 +113,8 @@ class VehiclesData:
 
         tobenorm = ['Age_of_Driver', 'Engine_Capacity_(CC)', 'Age_of_Vehicle']
 
-        scaler = MinMaxScaler
         norm = MinMaxScaler()
-        vehicles[tobenorm] = pd.DataFrame(norm.fit_transform(vehicles[tobenorm]))
-
+        vehicles[tobenorm] = norm.fit_transform(vehicles[tobenorm])
         self.valors = vehicles
 
     def get_valors(self):

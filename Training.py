@@ -8,6 +8,7 @@ class Training:
     def __init__(self, training, target):
         self.training = training
         self.target = target
+        self.model = 0
 
     def knnTraining(self):
         knn = KNeighborsClassifier(n_neighbors=15)
@@ -17,6 +18,7 @@ class Training:
     def decisionTreeTraining(self):
         clf = tree.DecisionTreeClassifier()
         clf.fit(self.training, self.target)
+        self.model = clf
         # Cridar la funcion de fit amb els valors desitjats
 
     def supportVectorMachinesTraining(self):
@@ -28,3 +30,4 @@ class Training:
         lrt = LogisticRegression(C=1, penalty='l2', tol=0.00001)
         lrt.fit(self.training, self.target)
         # Tocar paràmetres i cridar la funció fit
+

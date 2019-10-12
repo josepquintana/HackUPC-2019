@@ -15,7 +15,8 @@ def main():
     #target.to_csv('out/target.csv', sep=',')
 
     training = tr.Training(merged, target)
-    #training.knnTraining()
+    training.decisionTreeTraining()
+    print(training.model)
 
     #target.to_csv(r'output/target.csv')
     #print(merged.loc[merged['accident_id'] == 583864]['number_of_vehicles'])
