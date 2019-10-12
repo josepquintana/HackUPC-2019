@@ -4,62 +4,69 @@ from sklearn.preprocessing import MinMaxScaler
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-class AccidentsData():
+
+class AccidentsData:
     def __init__(self):
         accidents = pd.read_csv('data/accidents.csv')
 
-        #Eliminar columnes que preeliminarment es consideren irrellevants
-        accidents = accidents.drop(columns=['police_force', 'local_authority_district','local_authority_highway',
+        # Eliminar columnes que preeliminarment es consideren irrellevants
+        accidents = accidents.drop(columns=['police_force', 'local_authority_district', 'local_authority_highway',
                                             'lsoa_of_accident_location', 'location_easting_osgr',
                                             'location_northing_osgr'])
 
-
-        #One hot encoding
-        accidents = pd.get_dummies(accidents, columns=['1st_road_class','junction_detail', 'junction_control',
-                                                       '2nd_road_class','pedestrian_crossing-human_control',
-                                                       'pedestrian_crossing-physical_facilities','light_conditions',
+        # One hot encoding
+        accidents = pd.get_dummies(accidents, columns=['1st_road_class', 'junction_detail', 'junction_control',
+                                                       '2nd_road_class', 'pedestrian_crossing-human_control',
+                                                       'pedestrian_crossing-physical_facilities', 'light_conditions',
                                                        'road_surface_conditions',
-                                                       'special_conditions_at_site','carriageway_hazards'])
+                                                       'special_conditions_at_site', 'carriageway_hazards'])
 
-        #Eliminar columnes associades a condició de les one hot que són desconegudes
+        # Eliminar columnes associades a condició de les one hot que són desconegudes
         cols_acaben_menysu = []
         for colname in accidents.columns:
             if colname[-3:] == '_-1':
                 cols_acaben_menysu.append(colname)
         accidents = accidents.drop(columns=cols_acaben_menysu)
 
-
-        numeritza = {'urban_or_rural_area':{'Urban':1,
-                                            'Rural':0}
+        numeritza = {'urban_or_rural_area': {'Urban': 1,
+                                             'Rural': 0}
                      }
         accidents.replace(numeritza, inplace=True)
 
-        #Si no hi ha condició excepcional, irrellevant
+        # Si no hi ha condició excepcional, irrellevant
         accidents = accidents.drop(columns=['special'
-                                '_conditions_at_site_None','carriageway_hazards_None', '1st_road_class_Unclassified',
-                                '2nd_road_class_Unclassified'])
+                                            '_conditions_at_site_None', 'carriageway_hazards_None',
+                                            '1st_road_class_Unclassified',
+                                            '2nd_road_class_Unclassified'])
 
-        #Convertir hh:mm:00 a minuts desde mitjanit
-        accidents['time'] = accidents['time'].apply(lambda s: int(s[:-4])*60+int(s[-2:]))
+        # Convertir hh:mm:00 a minuts desde mitjanit
+        accidents['time'] = accidents['time'].apply(lambda s: int(s[:-4]) * 60 + int(s[-2:]))
 
         # Convertir aaaa:mm:dd a minuts desde mitjanit
-        accidents['date'] = accidents['date'].apply(lambda s: int(s[7:9]) + int(s[-2:-1])*30.44)
+        accidents['date'] = accidents['date'].apply(lambda s: int(s[7:9]) + int(s[-2:-1]) * 30.44)
 
-        #Substituïr -10s per avg de la columna
+        # Substituïr -10s per avg de la columna
         accidents['2nd_road_number'].replace(-1, np.nan, inplace=True)
         accidents['2nd_road_number'].fillna(accidents['2nd_road_number'].mean(), inplace=True)
 
-        #Normalitzat de les columnes que els cal
-        tobenorm = ['longitude','latitude','number_of_vehicles','number_of_casualties','date','time','1st_road_number',
-                    'road_type', 'speed_limit','2nd_road_number', 'weather_conditions']
+        # Normalitzat de les columnes que els cal
+        tobenorm = ['longitude', 'latitude', 'number_of_vehicles', 'number_of_casualties', 'date', 'time',
+                    '1st_road_number',
+                    'road_type', 'speed_limit', '2nd_road_number', 'weather_conditions']
         norm = MinMaxScaler()
         accidents[tobenorm] = pd.DataFrame(norm.fit_transform(accidents[tobenorm]))
 
-        self.target = accidents['target']
-        self.features = accidents.drop('target', axis=1)
+        #self.features = accidents.drop('target', axis=1)
+        self.features = accidents
 
-        
-class VehiclesData():
+    def get_features(self):
+        return self.features
+
+    def meth1(self):
+        print("Hey!\n")
+
+
+class VehiclesData:
     def __init__(self):
         vehicles = pd.read_csv('data/vehicles.csv')
         vehicles = vehicles.drop(columns=['Vehicle_IMD_Decile'])
@@ -88,8 +95,6 @@ class VehiclesData():
         vehicles['Age_of_Vehicle'].replace(-1, np.nan, inplace=True)
         vehicles['Age_of_Vehicle'].fillna(vehicles['Age_of_Vehicle'].mean(), inplace=True)
 
-
-
         vehicles['Was_Vehicle_Left_Hand_Drive?'].replace(-1, np.nan, inplace=True)
         vehicles['Was_Vehicle_Left_Hand_Drive?'].replace('-1', np.nan, inplace=True)
         vehicles['Sex_of_Driver'].replace(-1, np.nan, inplace=True)
@@ -111,11 +116,19 @@ class VehiclesData():
 
         self.valors = vehicles
 
-
-v = VehiclesData()
-a = AccidentsData()
-
+    def get_valors(self):
+        return self.valors
 
 
+class MergedData:
+    def __init__(self, accidents, vehicles):
+        self.merged = pd.merge(accidents.get_features(), vehicles.get_valors(), on='accident_id')
+        self.target = self.merged['target']
+        self.merged = self.merged.drop('target', axis=1)
 
+    def get_merged(self):
+        return self.merged
+
+    def get_target(self):
+        return self.target
 
