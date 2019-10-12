@@ -11,7 +11,7 @@ def main():
     merged = merged_data.get_merged()
     target = merged_data.get_target()
 
-    merged.to_csv('out/merged.csv', sep=',')
+    #merged.to_csv('out/merged.csv', sep=',')
     #target.to_csv('out/target.csv', sep=',')
 
     training = tr.Training(merged, target)
