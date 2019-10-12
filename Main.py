@@ -17,13 +17,17 @@ def main():
 
     training = tr.Training(X_train, y_train)
 
-#   training.knnTraining()
+#    training.knnTraining()
 #    y_pred = training.model.predict(X_test)
 #    print("KNN: %.10f" % f1_score(y_test, y_pred))
 
-    training.decisionTreeTraining()
+#    training.decisionTreeTraining()
+#    y_pred = training.model.predict(X_test)
+#    print("CLF: %.10f" % f1_score(y_test, y_pred))
+
+    training.sgdClassifierTraining()
     y_pred = training.model.predict(X_test)
-    print("CLF: %.10f" % f1_score(y_test, y_pred))
+    print("SGD: %.10f" % f1_score(y_test, y_pred))
 
 #    training.supportVectorMachinesTraining()
 #    y_pred = training.model.predict(X_test)

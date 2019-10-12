@@ -1,11 +1,12 @@
 from sklearn.model_selection import GridSearchCV
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn import tree
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import SGDClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import roc_auc_score
-import numpy as np
+from sklearn.kernel_approximation import RBFSampler
 
 
 class Training:
@@ -19,6 +20,20 @@ class Training:
         knn.fit(self.training, self.target)
         self.model = knn
         # Cridar la funcion de fit amb els valors desitjats, buscar l'hiper paràmetre adequat
+
+    def sgdClassifierTraining(self):
+
+        params = {
+            'loss': ('hinge', 'log', 'modified_huber', 'squared_hinge', 'perceptron', 'squared_loss', 'huber', 'epsilon_insensitive', 'squared_epsilon_insensitive')
+        }
+        sgd = GridSearchCV(DecisionTreeClassifier(), params, n_jobs=-1, verbose=1)
+        sgd.fit(self.training, self.target)
+        print(sgd.best_estimator_)
+        self.model = sgd.best_estimator_
+
+        #sgd = SGDClassifier(max_iter=1000, tol=1e-3)
+        #sgd.fit(self.training, self.target)
+        #self.model = sgd
 
     def decisionTreeTraining(self):
         params = {
@@ -38,7 +53,7 @@ class Training:
         dtc = GridSearchCV(DecisionTreeClassifier(), params, n_jobs=-1, verbose=1)
         dtc.fit(self.training, self.target)
         print(dtc.best_estimator_)
-        self.model = dtc
+        self.model = dtc.best_estimator_
 
         #clf = tree.DecisionTreeClassifier()
         #clf.fit(self.training, self.target)
