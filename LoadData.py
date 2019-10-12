@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -122,14 +123,21 @@ class VehiclesData:
 
 
 class MergedData:
-    def __init__(self, accidents, vehicles):
-        self.merged = pd.merge(accidents.get_features(), vehicles.get_valors(), on='accident_id')
-        self.target = self.merged['target']
-        self.merged = self.merged.drop('target', axis=1)
+    def __init__(self, accidents, vehicles, trainsize):
+        merged = pd.merge(accidents.get_features(), vehicles.get_valors(), on='accident_id')
+        target = merged['target']
+        merged = merged.drop('target', axis=1)
+        self.merged_train, self.merged_test, self.target_train, self.target_test = train_test_split(merged, target,
+                                                                                                    train_size=trainsize,
+                                                                                                    random_state=0)
+    def get_merged_train(self):
+        return self.merged_train
 
-    def get_merged(self):
-        return self.merged
+    def get_target_train(self):
+        return self.target_train
 
-    def get_target(self):
-        return self.target
+    def get_merged_test(self):
+        return self.merged_test
 
+    def get_target_test(self):
+        return self.target_test
