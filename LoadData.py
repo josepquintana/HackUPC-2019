@@ -2,8 +2,6 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 
 class AccidentsData:
@@ -58,13 +56,20 @@ class AccidentsData:
         accidents[tobenorm] = norm.fit_transform(accidents[tobenorm])
 
         #self.features = accidents.drop('target', axis=1)
-        self.features = accidents
+        self.Xtrain, self.Xtest, self.ytrain, self.ytest = train_test_split(accidents.drop('target', axis=1),
+                                                                            accidents['target'], train_size=.7)
 
-    def get_features(self):
-        return self.features
+    def get_Xtrain(self):
+        return self.Xtrain
 
-    def meth1(self):
-        print("Hey!\n")
+    def get_Xtest(self):
+        return self.Xtest
+
+    def get_ytrain(self):
+        return self.ytrain
+
+    def get_ytest(self):
+        return self.ytest
 
 
 class VehiclesData:
@@ -123,13 +128,20 @@ class VehiclesData:
 
 
 class MergedData:
-    def __init__(self, accidents, vehicles, trainsize):
-        merged = pd.merge(accidents.get_features(), vehicles.get_valors(), on='accident_id')
-        target = merged['target']
-        merged = merged.drop('target', axis=1)
-        self.merged_train, self.merged_test, self.target_train, self.target_test = train_test_split(merged, target,
-                                                                                                    train_size=trainsize,
-                                                                                                    random_state=0)
+    def __init__(self, accidents, vehicles):
+        acctarg_train = pd.concat([accidents.get_Xtrain(), accidents.get_ytrain()], axis=1)
+        acctarg_test = pd.concat([accidents.get_Xtest(), accidents.get_ytest()], axis=1)
+
+        merged_train = pd.merge(acctarg_train, vehicles.get_valors(), on='accident_id')
+        merged_test = pd.merge(acctarg_test, vehicles.get_valors(), on='accident_id')
+
+        self.target_train = merged_train['target']
+        self.target_test = merged_test['target']
+
+        self.merged_train = merged_train.drop('target', axis=1)
+        self.merged_test = merged_test.drop('target', axis=1)
+
+
     def get_merged_train(self):
         return self.merged_train
 
