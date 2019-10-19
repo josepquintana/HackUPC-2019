@@ -1,13 +1,8 @@
-from sklearn.model_selection import GridSearchCV
-from sklearn import tree
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.linear_model import SGDClassifier
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import roc_auc_score
-from sklearn.kernel_approximation import RBFSampler
 from sklearn.model_selection import GridSearchCV
 from sklearn.neural_network import MLPClassifier
 
@@ -25,18 +20,12 @@ class Training:
         # Cridar la funcion de fit amb els valors desitjats, buscar l'hiper paràmetre adequat
 
     def sgdClassifierTraining(self):
-
         params = {
             'loss': ('hinge', 'log', 'modified_huber', 'squared_hinge', 'perceptron', 'squared_loss', 'huber', 'epsilon_insensitive', 'squared_epsilon_insensitive')
         }
         sgd = GridSearchCV(DecisionTreeClassifier(), params, n_jobs=-1, verbose=1)
         sgd.fit(self.training, self.target)
-        print(sgd.best_estimator_)
         self.model = sgd.best_estimator_
-
-        #sgd = SGDClassifier(max_iter=1000, tol=1e-3)
-        #sgd.fit(self.training, self.target)
-        #self.model = sgd
 
     def decisionTreeTraining(self):
         params = {
@@ -55,27 +44,19 @@ class Training:
 
         dtc = GridSearchCV(DecisionTreeClassifier(), params, n_jobs=-1, verbose=1)
         dtc.fit(self.training, self.target)
-        print(dtc.best_estimator_)
         self.model = dtc.best_estimator_
-
-        #clf = tree.DecisionTreeClassifier()
-        #clf.fit(self.training, self.target)
-        #self.model = clf
-        # Cridar la funcion de fit amb els valors desitjats
 
     def decisionForestTraining(self):
         params = {'n_estimators': [10, 50,150],
                   'max_depth': [None, 15, 100]}
         gs = GridSearchCV(RandomForestClassifier(), params, n_jobs=-1, verbose=1)
         gs.fit(self.training.drop('accident_id', axis=1), self.target)
-        print(gs.best_estimator_)
         self.model = gs.best_estimator_
 
     def supportVectorMachinesTraining(self):
         svm = SVC()
         svm.fit(self.training, self.target)
         self.model = svm
-        # Cridar la funcion de fit amb els valors desitjats
 
     def logisticRegressionTraining(self):
         params = {'penalty':['l1', 'l2'],
@@ -84,15 +65,11 @@ class Training:
                   'solver':['saga']}
         gs = GridSearchCV(LogisticRegression(), params, n_jobs=-1, verbose=1)
         gs.fit(self.training, self.target)
-        print(gs.best_estimator_)
         self.model = gs.best_estimator_
         # Tocar paràmetres i cridar la funció fit
 
-    def MLPTraining(self):
+    def mlpTraining(self):
         #params = {'solver':['sgd','adam'],'activation':['logistic','tanh','relu'], 'learning_rate':['invscaling','adaptive']}
-        #gs = GridSearchCV(MLPClassifier(), params, n_jobs=-1, verbose=1)
-        #gs.fit(self.training, self.target)
-        #print(gs.best_estimator_)
         gs = MLPClassifier(max_iter=100, learning_rate='invscaling', hidden_layer_sizes=(170,110,50))
         gs.fit(self.training.drop('accident_id', axis=1), self.target)
         self.model = gs
