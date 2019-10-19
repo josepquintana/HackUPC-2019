@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import f1_score
 
+
 def main():
     print("Carregant dades...")
     accidents_data = ld.AccidentsData()
@@ -16,6 +17,7 @@ def main():
 
     print('Entrenant models...')
     training = tr.Training(X_train, y_train)
+    
     training.decisionForestTraining()
 
     print('Calculant predicció...')
