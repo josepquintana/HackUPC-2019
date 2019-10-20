@@ -17,7 +17,7 @@ Predicting accident severity will help the authorities closely monitor accident 
 
 
 ## Data Dictionary
-A data dictionary with the definition of all the accidents and vehicles variables can be found [here](https://github.com/josepquintana/HackUPC-2019/data/Data_Dictionary.xlsx). 
+A data dictionary with the definition of all the accidents and vehicles variables can be found [here](https://github.com/josepquintana/HackUPC-2019/blob/master/data/Data_Dictionary.xlsx). 
 
 
 ## Evaluation metrics
@@ -36,4 +36,4 @@ How would you include software and IT infrastructure to create an automated solu
 
 
 ## More
-More details about this challenge is available [here](https://github.com/josepquintana/HackUPC-2019/data/HackUPC_booklet_2019-10-11.pdf)
+More details about this challenge is available [here](https://github.com/josepquintana/HackUPC-2019/blob/master/data/HackUPC_booklet_2019-10-11.pdf)
