@@ -1,3 +1,4 @@
+import os
 import LoadData as ld
 import Training as tr
 import numpy as np
@@ -5,6 +6,8 @@ import pandas as pd
 from sklearn.metrics import f1_score
 
 def main():
+    #os.chdir('../') # Set working directory
+
     print("\nStarting program.\n")
 
     print("Loading data...\n")
@@ -16,7 +19,7 @@ def main():
     X_train = merged_data.get_merged_train()
     y_train = merged_data.get_target_train()
 
-    print("Available Models:")
+    print("Available Models:\n")
     print("1. K-nearest Neighbors")
     print("2. Stochastic Gradient Descent Classifier")
     print("3. Decision Tree Classifier")
@@ -28,7 +31,7 @@ def main():
 
     mode = input("Choose Training Model: ")
 
-    print('Training model...\n')
+    print('\nTraining model...\n')
     training = tr.Training(X_train, y_train)
 
     if mode == "1":
