@@ -1,12 +1,17 @@
 import pandas as pd
 import numpy as np
+from pathlib import Path
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 
 
 class AccidentsData:
     def __init__(self):
-        accidents = pd.read_csv('data/accidents.csv')
+        filename = Path('../data/accidents.csv')
+        if not filename.exists():
+            print('\nERROR: Missing dataset file: accidents.csv\n')
+            quit()
+        accidents = pd.read_csv(filename)
 
         # Eliminar columnes que preeliminarment es consideren irrellevants
         accidents = accidents.drop(columns=['police_force', 'local_authority_district', 'local_authority_highway',
@@ -74,7 +79,11 @@ class AccidentsData:
 
 class VehiclesData:
     def __init__(self):
-        vehicles = pd.read_csv('data/vehicles.csv')
+        filename = Path('../data/vehicles.csv')
+        if not filename.exists():
+            print('\nERROR: Missing dataset file: vehicles.csv\n')
+            quit()
+        vehicles = pd.read_csv(filename)
         vehicles = vehicles.drop(columns=['Vehicle_IMD_Decile'])
         vehicles = pd.get_dummies(vehicles, columns=['Vehicle_Type', 'Towing_and_Articulation', 'Vehicle_Manoeuvre',
                                                      'Vehicle_Location-Restricted_Lane', 'Junction_Location',
